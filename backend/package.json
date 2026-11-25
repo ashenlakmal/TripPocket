@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch --env-file-if-exists=.env server.js",
-    "start": "node --env-file-if-exists=.env server.js"
+    "start": "node --env-file-if-exists=.env server.js",
+    "seed:trips": "node --env-file-if-exists=.env scripts/seedTrips.js"
   },
   "dependencies": {
     "cors": "2.8.5",

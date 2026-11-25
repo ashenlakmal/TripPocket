@@ -1,8 +1,10 @@
 // Abdul Rahman: implement these functions and connect them to the database.
 
-export async function getTrips(req, res) {
-  // TODO: Implement GET /trips.
-  res.status(501).json({ error: { message: "Not implemented yet." } });
+import Trip from '../models/Trip.js';
+
+export async function getTrips(_req, res) {
+  const trips = await Trip.find().sort({ createdAt: -1 }).lean();
+  res.json({ data: trips });
 }
 
 export async function createTrip(req, res) {

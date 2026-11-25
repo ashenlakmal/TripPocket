@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { apiRequest } from './services/api.js';
 import Trips from './components/Trips.jsx';
-import Expenses from './components/Expenses.jsx';
+import ExpensePage, { ExpenseCard } from './components/Expenses.jsx';
 import BudgetSummary from './components/BudgetSummary.jsx';
 
 export default function App() {
   const [connection, setConnection] = useState('Checking backend connection...');
+  const [view, setView] = useState('dashboard');
 
   useEffect(() => {
     const controller = new AbortController();
@@ -22,15 +23,18 @@ export default function App() {
       <header>
         <p className="eyebrow">TRAVEL BUDGET PLANNER</p>
         <h1>TripPocket</h1>
-        <p>A starting point for your team project.</p>
+        <p>{view === 'dashboard' ? 'A starting point for your team project.' : 'Track every travel expense in one place.'}</p>
         <p className="connection" role="status">{connection}</p>
       </header>
-      {/* TODO: Connect trip selection to the expense and summary modules. */}
-      <div className="modules">
-        <Trips />
-        <Expenses />
-        <BudgetSummary />
-      </div>
+      {view === 'dashboard' ? (
+        <div className="modules">
+          <Trips />
+          <ExpenseCard onClick={() => setView('expenses')} />
+          <BudgetSummary />
+        </div>
+      ) : (
+        <ExpensePage onBack={() => setView('dashboard')} />
+      )}
     </main>
   );
 }
