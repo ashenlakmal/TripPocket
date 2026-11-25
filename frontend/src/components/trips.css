@@ -1,0 +1,232 @@
+/* Trip Management styles. All class names start with "trip" to avoid clashing with other modules. */
+
+.trips-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.trips-header h2 {
+  margin: 0;
+}
+
+.trip-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.trip-card,
+.trip-summary-card {
+  background: #fff;
+  border: 1px solid #d9e2ea;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.trip-card h3,
+.trip-summary-card h2 {
+  margin: 0 0 4px;
+  color: #1b3a4f;
+  overflow-wrap: anywhere;
+}
+
+.trip-destination {
+  margin: 0 0 8px;
+  font-weight: 600;
+  color: #0f766e;
+}
+
+.trip-meta,
+.trip-budget {
+  margin: 0 0 4px;
+  color: #4a5b69;
+}
+
+.trip-budget {
+  font-weight: 600;
+  color: #1b3a4f;
+}
+
+.trip-card-actions,
+.trip-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.trip-actions {
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.trip-btn {
+  font: inherit;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #b8c6d2;
+  background: #fff;
+  color: #1b3a4f;
+  cursor: pointer;
+}
+
+.trip-btn:hover:not(:disabled) {
+  background: #eef3f7;
+}
+
+.trip-btn:focus-visible,
+.trip-field input:focus-visible {
+  outline: 3px solid #0f766e;
+  outline-offset: 2px;
+}
+
+.trip-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.trip-btn-primary {
+  background: #0f766e;
+  border-color: #0f766e;
+  color: #fff;
+}
+
+.trip-btn-primary:hover:not(:disabled) {
+  background: #0b5d57;
+}
+
+.trip-btn-danger {
+  background: #b42318;
+  border-color: #b42318;
+  color: #fff;
+}
+
+.trip-btn-danger:hover:not(:disabled) {
+  background: #8f1b12;
+}
+
+.trip-btn-danger-outline {
+  color: #b42318;
+  border-color: #e0a8a3;
+}
+
+.trip-state {
+  background: #fff;
+  border: 1px dashed #b8c6d2;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  color: #4a5b69;
+}
+
+.trip-state-error {
+  border-color: #e0a8a3;
+  color: #b42318;
+}
+
+.trip-notice {
+  background: #e6f4f1;
+  border: 1px solid #a9d8d0;
+  color: #0b5d57;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin: 0 0 16px;
+}
+
+.trip-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 30, 45, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 100;
+}
+
+.trip-dialog {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+.trip-dialog h2 {
+  margin-top: 0;
+}
+
+.trip-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 14px;
+  flex: 1;
+  min-width: 0;
+}
+
+.trip-field label {
+  font-weight: 600;
+  color: #1b3a4f;
+}
+
+.trip-field input {
+  font: inherit;
+  padding: 9px 10px;
+  border: 1px solid #b8c6d2;
+  border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.trip-field input[aria-invalid='true'] {
+  border-color: #b42318;
+}
+
+.trip-row {
+  display: flex;
+  gap: 12px;
+}
+
+.trip-error {
+  color: #b42318;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.trip-form-error {
+  margin-top: 4px;
+}
+
+.trip-details {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.trip-details > .trip-btn {
+  align-self: flex-start;
+}
+
+@media (max-width: 520px) {
+  .trip-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .trip-actions .trip-btn {
+    flex: 1;
+  }
+}
