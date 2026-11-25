@@ -33,6 +33,20 @@ async function calculateTotalSpent(tripId) {
   return roundMoney(result?.totalSpent ?? 0);
 }
 
+async function calculateCategoryTotals(tripId) {
+  const categoryTotals = await Expense.aggregate([
+    { $match: { tripId } },
+    { $group: { _id: '$category', total: { $sum: '$amount' } } },
+    { $sort: { total: -1, _id: 1 } },
+    { $project:  { _id: 0, category: '$_id', total: 1 } },
+  ]);
+
+  return categoryTotals.map(({ category, total }) => ({
+    category,
+    total: roundMoney(total),
+  }));
+}
+
 // GET /trips/:tripId/summary.
 export async function getSummary(req, res, next) {
   try {
@@ -51,7 +65,14 @@ export async function getSummary(req, res, next) {
   }
 }
 
-export async function getCategorySummary(req, res) {
-  // TODO: Implement GET /trips/:tripId/category-summary.
-  res.status(501).json({ error: { message: "Not implemented yet." } });
+// GET /trips/:tripId/category-summary.
+export async function getCategorySummary(req, res, next) {
+  try {
+    const trip = await findTripOrThrow(req.params.tripId);
+    const categories = await calculateCategoryTotals(trip._id);
+
+    res.json({ data: { categories } });
+  } catch (error) {
+    next(error);
+  }
 }
