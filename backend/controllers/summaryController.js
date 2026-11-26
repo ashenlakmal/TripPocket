@@ -1,12 +1,12 @@
-// Ravindu Thiranjaya: implement these functions and connect them to the database.
-import mongoose from 'mongoose'
-import Trip from '../models/Trip.js'
-import Expense from '../models/Expense.js'
+// Ravindu Thiranjaya: Budget summary controller for the summary and category summary endpoints.
+import mongoose from 'mongoose';
+import Trip from '../models/Trip.js';
+import Expense from '../models/Expense.js';
 
 function createHttpError(status, message) {
   const error = new Error(message);
   error.status = status;
-  return error; 
+  return error;
 }
 
 function roundMoney(value) {
@@ -15,13 +15,15 @@ function roundMoney(value) {
 
 async function findTripOrThrow(tripId) {
   if (!mongoose.isValidObjectId(tripId)) {
-    throw createHttpError(400, 'Trip id is not valid.')
+    throw createHttpError(400, 'Trip id is not valid.');
   }
 
   const trip = await Trip.findById(tripId).select('budget');
   if (!trip) {
     throw createHttpError(404, 'Trip not found.');
   }
+
+  return trip;
 }
 
 async function calculateTotalSpent(tripId) {
@@ -38,7 +40,7 @@ async function calculateCategoryTotals(tripId) {
     { $match: { tripId } },
     { $group: { _id: '$category', total: { $sum: '$amount' } } },
     { $sort: { total: -1, _id: 1 } },
-    { $project:  { _id: 0, category: '$_id', total: 1 } },
+    { $project: { _id: 0, category: '$_id', total: 1 } },
   ]);
 
   return categoryTotals.map(({ category, total }) => ({
