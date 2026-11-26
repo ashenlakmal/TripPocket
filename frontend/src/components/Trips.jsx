@@ -20,6 +20,17 @@ function validateTrip(values) {
   return errors;
 }
 
+// Closes a dialog with the Escape key, except while a request is still running.
+function useEscapeKey(onEscape, disabled) {
+  useEffect(() => {
+    function handleKeyDown(event) {
+      if (event.key === 'Escape' && !disabled) onEscape();
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onEscape, disabled]);
+}
+
 function TripForm({ trip, onSaved, onCancel }) {
   const [values, setValues] = useState(
     trip
@@ -35,6 +46,7 @@ function TripForm({ trip, onSaved, onCancel }) {
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState('');
   const [saving, setSaving] = useState(false);
+  useEscapeKey(onCancel, saving);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -120,6 +132,7 @@ function TripForm({ trip, onSaved, onCancel }) {
 function DeleteDialog({ trip, onDeleted, onCancel }) {
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState('');
+  useEscapeKey(onCancel, deleting);
 
   async function handleDelete() {
     setDeleting(true);

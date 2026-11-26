@@ -131,6 +131,10 @@
 
 .trip-state-error {
   border-color: #e0a8a3;
+}
+
+/* Targets the paragraph so the base "section p" colour does not override the error colour. */
+.trip-state-error p {
   color: #b42318;
 }
 
