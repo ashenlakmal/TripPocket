@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import Trip from '../models/Trip.js';
+import { findInputErrors } from '../utils/tripInput.js';
 
 const EDITABLE_FIELDS = ['name', 'destination', 'startDate', 'endDate', 'budget'];
 
@@ -15,18 +16,14 @@ function sendError(res, status, message, details) {
   res.status(status).json({ error: { message, ...(details && { details }) } });
 }
 
-// Turns a Mongoose validation error into { message, details: { field: message } }.
-function sendValidationError(res, error) {
-  const details = {};
-  for (const [field, fieldError] of Object.entries(error.errors)) {
-    details[field] =
-      fieldError.name === 'CastError'
-        ? field === 'budget'
-          ? 'Budget must be a number.'
-          : 'Enter a valid date.'
-        : fieldError.message;
-  }
+// details is { field: message }; the first message is also used as the summary.
+function sendFieldErrors(res, details) {
   sendError(res, 400, Object.values(details)[0], details);
+}
+
+function sendValidationError(res, error) {
+  const entries = Object.entries(error.errors).map(([field, fieldError]) => [field, fieldError.message]);
+  sendFieldErrors(res, Object.fromEntries(entries));
 }
 
 // Returns the trip, or sends a 400/404 response and returns null.
@@ -54,7 +51,11 @@ export async function getTrips(_req, res, next) {
 
 export async function createTrip(req, res, next) {
   try {
-    const trip = await Trip.create(pickTripFields(req.body));
+    const fields = pickTripFields(req.body);
+    const inputErrors = findInputErrors(fields);
+    if (Object.keys(inputErrors).length > 0) return sendFieldErrors(res, inputErrors);
+
+    const trip = await Trip.create(fields);
     res.status(201).json({ data: trip });
   } catch (error) {
     if (error.name === 'ValidationError') return sendValidationError(res, error);
@@ -75,7 +76,12 @@ export async function updateTrip(req, res, next) {
   try {
     const trip = await findTripOr404(req, res);
     if (!trip) return;
-    trip.set(pickTripFields(req.body));
+
+    const fields = pickTripFields(req.body);
+    const inputErrors = findInputErrors(fields);
+    if (Object.keys(inputErrors).length > 0) return sendFieldErrors(res, inputErrors);
+
+    trip.set(fields);
     await trip.save();
     res.json({ data: trip });
   } catch (error) {
