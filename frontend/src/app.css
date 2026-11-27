@@ -1,0 +1,105 @@
+/* App-wide theme and shared navigation. Imported after styles.css so these values take priority. */
+
+:root {
+  --paper: #f6f2ea;
+  --surface: #fffdf8;
+  --ink: #1e2a2c;
+  --muted: #5b6668;
+  --line: #ded6c8;
+  --accent: #0f625a;
+  --accent-dark: #0a4a44;
+  --danger: #a4321f;
+  --font-heading: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading);
+  letter-spacing: normal;
+}
+
+main {
+  padding-top: 40px;
+}
+
+section {
+  background: var(--surface);
+  border-color: var(--line);
+}
+
+section p {
+  color: var(--muted);
+}
+
+:focus-visible {
+  outline-color: var(--accent);
+}
+
+.app-nav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+.app-nav-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  column-gap: 24px;
+}
+
+.app-brand {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--accent-dark);
+  text-decoration: none;
+  padding: 16px 0;
+}
+
+.app-nav nav {
+  display: flex;
+  gap: 24px;
+}
+
+.app-nav-link {
+  padding: 18px 0 15px;
+  border-bottom: 3px solid transparent;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.app-nav-link:hover {
+  color: var(--ink);
+}
+
+.app-nav-link[aria-current='page'] {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+
+.connection-error {
+  margin: 0 0 24px;
+  padding: 12px 16px;
+  border: 1px solid var(--danger);
+  border-radius: 8px;
+  color: var(--danger);
+}
+
+@media (max-width: 720px) {
+  main {
+    padding-top: 24px;
+  }
+
+  .app-nav-inner {
+    padding: 0 18px;
+  }
+}

@@ -121,6 +121,33 @@ All routes use the `/api` prefix. Feature routes are placeholders until their co
 
 Response format: `{ "data": ... }` for success and `{ "error": { "message": "..." } }` for errors.
 
+### Trip API
+
+`POST /trips` needs every field below. `PUT /trips/:id` accepts any subset of them.
+
+```json
+{
+  "name": "Kandy Weekend",
+  "destination": "Kandy",
+  "startDate": "2026-12-05",
+  "endDate": "2026-12-08",
+  "budget": 45000
+}
+```
+
+| Field | Rules |
+| --- | --- |
+| `name`, `destination` | Text, up to 100 characters |
+| `startDate`, `endDate` | Real dates as `YYYY-MM-DD`; `endDate` on or after `startDate` |
+| `budget` | Number greater than zero, in LKR |
+
+| Status | Meaning |
+| --- | --- |
+| 200 / 201 | Success / trip created |
+| 400 | Invalid trip id or field values. Field errors include `error.details` as `{ field: message }` |
+| 404 | Trip not found |
+| 409 | Trip cannot be deleted because it still has expenses |
+
 ## Build and deployment
 
 Run `npm run build` inside `frontend` to generate the production files in `frontend/dist`.
