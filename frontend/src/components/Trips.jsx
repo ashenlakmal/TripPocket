@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { apiRequest } from '../services/api.js';
-import { formatDate, formatLKR, toDateInputValue } from './tripFormat.js';
+import TripTicket from './TripTicket.jsx';
+import { toDateInputValue } from './tripFormat.js';
 import './trips.css';
 
 const EMPTY_FORM = { name: '', destination: '', startDate: '', endDate: '', budget: '' };
@@ -213,9 +214,12 @@ export default function Trips({ onSelectTrip }) {
   return (
     <section className="trips" aria-labelledby="my-trips-title">
       <div className="trips-header">
-        <h2 id="my-trips-title">My Trips</h2>
+        <div>
+          <h1 id="my-trips-title">My Trips</h1>
+          <p className="trips-intro">Plan each journey and set what you want to spend on it.</p>
+        </div>
         <button type="button" className="trip-btn trip-btn-primary" onClick={() => setEditing({})}>
-          + New trip
+          New trip
         </button>
       </div>
 
@@ -245,26 +249,24 @@ export default function Trips({ onSelectTrip }) {
       {status === 'ready' && trips.length > 0 && (
         <ul className="trip-list">
           {trips.map(trip => (
-            <li key={trip._id} className="trip-card">
-              <div className="trip-card-body">
-                <h3>{trip.name}</h3>
-                <p className="trip-destination">{trip.destination}</p>
-                <p className="trip-meta">
-                  {formatDate(trip.startDate)} – {formatDate(trip.endDate)}
-                </p>
-                <p className="trip-budget">Budget: {formatLKR(trip.budget)}</p>
-              </div>
-              <div className="trip-card-actions">
-                <button type="button" className="trip-btn trip-btn-primary" onClick={() => onSelectTrip?.(trip)}>
-                  Open
-                </button>
-                <button type="button" className="trip-btn" onClick={() => setEditing(trip)}>
-                  Edit
-                </button>
-                <button type="button" className="trip-btn trip-btn-danger-outline" onClick={() => setDeleting(trip)}>
-                  Delete
-                </button>
-              </div>
+            <li key={trip._id}>
+              <TripTicket trip={trip}>
+                <div className="trip-card-actions">
+                  <button type="button" className="trip-btn trip-btn-primary" onClick={() => onSelectTrip?.(trip)}>
+                    Open trip
+                  </button>
+                  <button type="button" className="trip-btn trip-btn-quiet" onClick={() => setEditing(trip)}>
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    className="trip-btn trip-btn-quiet trip-btn-quiet-danger"
+                    onClick={() => setDeleting(trip)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </TripTicket>
             </li>
           ))}
         </ul>

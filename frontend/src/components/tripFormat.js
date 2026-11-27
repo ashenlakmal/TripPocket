@@ -22,3 +22,16 @@ export function formatDate(value) {
 export function toDateInputValue(value) {
   return new Date(value).toISOString().slice(0, 10);
 }
+
+// Counts both the first and last day of the trip.
+export function countTripDays(startDate, endDate) {
+  const millisecondsPerDay = 24 * 60 * 60 * 1000;
+  return Math.round((new Date(endDate) - new Date(startDate)) / millisecondsPerDay) + 1;
+}
+
+export function getTripStatus(startDate, endDate) {
+  const today = new Date().toLocaleDateString('en-CA'); // local date as YYYY-MM-DD
+  if (toDateInputValue(endDate) < today) return 'Past';
+  if (toDateInputValue(startDate) > today) return 'Upcoming';
+  return 'Ongoing';
+}
