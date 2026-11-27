@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { apiRequest } from '../services/api.js';
+import './BudgetSummary.css';
 
 const currencyFormatter = new Intl.NumberFormat('en-LK', {
   style: 'currency',
@@ -8,6 +9,11 @@ const currencyFormatter = new Intl.NumberFormat('en-LK', {
 
 function formatMoney(value) {
   return currencyFormatter.format(value);
+}
+
+function calculatePercentUsed(budget, totalSpent) {
+  if (budget <= 0) return 0;
+  return (totalSpent / budget) * 100;
 }
 
 function useBudgetSummary({ tripId, refreshKey }) {
@@ -51,27 +57,86 @@ function SummaryCard({label, value}) {
   );
 }
 
+function SpendingProgress({budget, totalSpent, isOverBudget}) {
+  const percentUsed = calculatePercentUsed(budget, totalSpent);
+  const barWidth = Math.min(percentUsed, 100);
+  const percentLabel = Math.floor(percentUsed)
+
+  return (
+    <div className="summary-progress">
+      <p className="summary-progress-label">{percentLabel}% of budget used</p>
+      <div 
+        className="summary-progress-track"
+        role="progressbar"
+        aria-label="Budget used"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.min(percentLabel, 100)}
+      >
+        <div 
+          className={isOverBudget ? 'summary-progress-fill summary-progress-fill--over' : 'summary-progress-fill'}
+          style={{ width: `${barWidth}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function OverBudgetWarning({ overSpent }) {
+  return (
+    <p className="summary-warning" role="alert">
+      Over budget. You have spent {formatMoney(overSpent)} more than planned.
+    </p>
+  );
+}
+
+function CategoryBreakdown({ categories }) {
+  return (
+    <div>
+      <h3 className="summary-category-title">Spending by category</h3>
+      {categories.length === 0 ? (
+        <p>No expenses yet. Add an expense to see how your money is spent.</p>
+      ) : (
+        <ul className="summary-categories">
+          {categories.map(({ category, total }) => (
+            <li key={category}>
+              <span>{category}</span>
+              <span>{formatMoney(total)}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 function SummaryContent({ tripId, status, data, message }) {
   if (!tripId) return <p>Select a trip to see its budget summary.</p>
   if (status == 'loading') return <p role="status">Loading budget summary...</p>
   if (status == 'error') return <p role="alert">{message}</p>
 
+  const isOverBudget = data.remaining < 0;
+
   return (
     <>
       <dl>
         <SummaryCard label="Budget" value={data.budget}/>
-        <SummaryCard label="Total" value={data.total} />
+        <SummaryCard label="Total spent" value={data.totalSpent} />
         <SummaryCard label="Remaining" value={data.remaining} />
       </dl>
-      {data.categories.length === 0 && (
-        <p>No expenses yet. Add an expense to see how your money is spent</p>
-      )}
+      <SpendingProgress 
+        budget={data.budget}
+        totalSpent={data.totalSpent}
+        isOverBudget={isOverBudget}
+      />
+      {isOverBudget && <OverBudgetWarning overSpent={Math.abs(data.remaining)} />}
+      <CategoryBreakdown categories={data.categories} />
     </>
   )
 }
 
 export default function BudgetSummary({ tripId = null, refreshKey = 0}) {
-  const { status, data, message } = useBudgetSummary(tripId, refreshKey);
+  const { status, data, message } = useBudgetSummary({ tripId, refreshKey });
 
   return (
     <section aria-labelledby="budget-summary-title">
