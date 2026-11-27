@@ -119,7 +119,7 @@ function SummaryContent({ tripId, status, data, message }) {
 
   return (
     <>
-      <dl>
+      <dl className="summary-cards">
         <SummaryCard label="Budget" value={data.budget}/>
         <SummaryCard label="Total spent" value={data.totalSpent} />
         <SummaryCard label="Remaining" value={data.remaining} />
